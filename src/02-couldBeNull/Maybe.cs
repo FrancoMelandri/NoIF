@@ -2,6 +2,27 @@ using System;
 
 namespace CouldBeNull
 {
+    public struct Maybe<T>
+    {
+        private bool hasValue;
+        private T value;
+
+        public static Maybe<T> Some(T value) 
+        { 
+            return new Maybe<T> {hasValue = true, value = value};
+        }
+
+        public static Maybe<T> None() 
+        { 
+            return new Maybe<T> {hasValue = false};
+        }
+
+        public R Match<R>(Func<T, R> some, Func<R> none)
+        {
+           return hasValue ? some(value) : none();
+        }
+    }
+
     public class MaybeResponse
     {
         private bool hasValue;
@@ -23,7 +44,7 @@ namespace CouldBeNull
         }
     }
 
-    public class Maybe
+    public class MaybeClass    
     {
         public MaybeResponse getResponse(string id) 
         {

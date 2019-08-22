@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using CouldBeNull;
 
 namespace Tests
 {
@@ -93,12 +94,12 @@ namespace Tests
 
     public class MaybeNoIfTests
     {
-        private CouldBeNull.Maybe sut;
+        private CouldBeNull.MaybeClass sut;
 
         [SetUp]
         public void Setup()
         {
-            sut = new CouldBeNull.Maybe();
+            sut = new CouldBeNull.MaybeClass();
         }
 
         [Test]
@@ -143,6 +144,30 @@ namespace Tests
                              });
 
             Assert.IsTrue(true);
+        }
+    }
+
+
+    public class MaybeMonad
+    {
+
+        [Test]
+        public void ShouldGetSome()
+        {
+            Maybe<Response> result = 
+                    Maybe<Response>.Some(new Response { message = "hello"  } );
+            Assert.IsTrue (result
+                            .Match<bool>(_ => true,
+                                         () => false)) ;
+        }
+  
+        [Test]
+        public void ShouldGetNone()
+        {
+            Maybe<Response> result = Maybe<Response>.None();
+            Assert.IsTrue (result
+                            .Match<bool>(_ => false,
+                                         () => true)) ;
         }
     }
 }
