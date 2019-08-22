@@ -44,20 +44,34 @@ namespace CouldBeNull
         }
     }
 
-    public class MaybeClass    
+    public class MaybeClass
     {
-        public MaybeResponse getResponse(string id) 
+        public Maybe<Response> getResponse(string id) 
         {
             try
             {
-                return MaybeResponse.Some(new Response
+                return Maybe<Response>.Some(new Response
                 {
                     message = string.Format("Your id is {0}", Convert.ToInt32(id))
                 });
             }
             catch (Exception)
             {
-                return MaybeResponse.None();
+                return Maybe<Response>.None();
+            }
+        }
+
+        public Either<int, string> getResponseEither(string id) 
+        {
+            try
+            {
+                return Either<int, string>
+                            .Right(string.Format("Your id is {0}", Convert.ToInt32(id)));
+            }
+            catch (Exception)
+            {
+                return Either<int, string>
+                            .Left(42);
             }
         }
     }

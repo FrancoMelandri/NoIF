@@ -14,20 +14,25 @@ namespace Tests
         }
 
         [Test]
-        public void ShouldgetWrongReponse()
+        public void ShouldCheckNullIfException()
         {
             const string id = "ivalidId";
             var response = sut.getResponse(id);
-            Assert.AreEqual(response, null);
+            if (response != null)
+                Assert.IsTrue(false);
+            else
+                Assert.IsTrue(true);
         }
     
         [Test]
-        public void ShouldgetRightReponse()
+        public void ShouldGetValueIFNoexception()
         {
             const string id = "123";
             var response = sut.getResponse(id);
-            Assert.AreNotEqual(response, null);
-            Assert.AreEqual(response.message, "Your id is 123");
+            if (response != null)
+                Assert.IsTrue(true);
+            else
+                Assert.IsTrue(false);
         }
 
         [Test]
@@ -121,6 +126,24 @@ namespace Tests
         }
 
         [Test]
+        public void ShouldgetWrongReponseEither()
+        {
+            const string id = "invalidId";
+            Assert.IsTrue (sut.getResponseEither(id)
+                            .Match<bool>(_ => false,
+                                         _ => true)) ;
+        }
+    
+        [Test]
+        public void ShouldgetRightReponseEither()
+        {
+            const string id = "123";
+            Assert.IsTrue (sut.getResponseEither(id)
+                            .Match<bool>(_ => true,
+                                         _ => false)) ;
+        }
+
+        [Test]
         public void AsMain() {
 
             sut.getResponse("invalidId")
@@ -147,7 +170,6 @@ namespace Tests
         }
     }
 
-
     public class MaybeMonad
     {
 
@@ -169,5 +191,29 @@ namespace Tests
                             .Match<bool>(_ => false,
                                          () => true)) ;
         }
+    }
+
+    public class EitherMonad
+    {
+        [Test]
+        public void ShouldGetLeft()
+        {
+            Either<string, int> result = 
+                    Either<string, int>.Left("error");
+            Assert.IsTrue (result
+                            .Match<bool>(_ => false,
+                                         _ => true)) ;
+        }
+
+        [Test]
+        public void ShouldGetRight()
+        {
+            Either<string, int> result = 
+                    Either<string, int>.Right(42);
+            Assert.IsTrue (result
+                            .Match<bool>(_ => true,
+                                         _ => false)) ;
+        }
+
     }
 }
